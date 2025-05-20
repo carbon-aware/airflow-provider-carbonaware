@@ -5,7 +5,7 @@ from typing import TYPE_CHECKING, Any
 from airflow.exceptions import AirflowException
 from airflow.models import BaseOperator, BaseOperatorLink
 
-from sample_provider.hooks.sample import SampleHook
+from carbonaware_provider.hooks.carbonaware import CarbonAwareHook
 
 if TYPE_CHECKING:
     from airflow.utils.context import Context
