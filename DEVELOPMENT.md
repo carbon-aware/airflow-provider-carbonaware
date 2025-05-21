@@ -118,7 +118,8 @@ To build and test the provider locally, typically using a `.whl` file with the A
     *   Copy the generated `.whl` file to your Astro project directory (`cp dist/airflow_provider_carbonaware-*.whl astro/airflow_provider_carbonaware.whl`).
     *   Add the following line to your Astro project's `Dockerfile` to install the provider:
         ```dockerfile
-        COPY airflow_provider_carbonaware.whl /usr/local/lib/python3.12/site-packages/
+        COPY airflow_provider_carbonaware.whl .
+        RUN pip install --user airflow_provider_carbonaware.whl
         ```
 6.  **Add Example DAGs**:
     Copy the example DAGs from `carbonaware_provider/example_dags/` to the `dags/` folder of your Astro project.
