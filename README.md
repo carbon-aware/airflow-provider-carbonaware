@@ -35,7 +35,7 @@ from airflow.decorators import dag
 from airflow.operators.bash import BashOperator
 from airflow.operators.python import PythonOperator
 
-from carbonaware_provider.operators.carbonaware import CarbonAwareOperator
+from airflow_provider_carbonaware.operators.carbonaware import CarbonAwareOperator
 
 @dag(
     start_date=pendulum_datetime(2023, 1, 1),

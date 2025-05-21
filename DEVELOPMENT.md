@@ -32,7 +32,7 @@ The provider package adheres to the following general file structure:
 ├── LICENSE
 ├── README.md
 ├── DEVELOPMENT.md
-├── carbonaware_provider # Package import directory
+├── airflow_provider_carbonaware # Package import directory
 │   ├── __init__.py
 │   ├── example_dags
 │   │   └── carbonaware.py
@@ -63,11 +63,11 @@ The `pyproject.toml` file contains metadata and dependencies for the package. Ke
 
 ### Versioning
 
-Use standard semantic versioning (e.g., `MAJOR.MINOR.PATCH`) for releasing the package. Update the version in `carbonaware_provider/__init__.py` (which `pyproject.toml` reads dynamically) for each new release.
+Use standard semantic versioning (e.g., `MAJOR.MINOR.PATCH`) for releasing the package. Update the version in `airflow_provider_carbonaware/__init__.py` (which `pyproject.toml` reads dynamically) for each new release.
 
-### Provider Metadata (`carbonaware_provider/__init__.py`)
+### Provider Metadata (`airflow_provider_carbonaware/__init__.py`)
 
-The `get_provider_info()` method in `carbonaware_provider/__init__.py` is essential for Airflow to recognize and use the provider. It should return a dictionary with metadata like:
+The `get_provider_info()` method in `airflow_provider_carbonaware/__init__.py` is essential for Airflow to recognize and use the provider. It should return a dictionary with metadata like:
 
 ```python
 __version__ = "0.1.0" # Example version
@@ -82,7 +82,7 @@ def get_provider_info():
         "operators": [
              {
                 "integration-name": "CarbonAwareScheduler", # A descriptive name for the integration your operator provides
-                "python-modules": ["carbonaware_provider.operators.carbonaware.CarbonAwareOperator"],
+                "python-modules": ["airflow_provider_carbonaware.operators.carbonaware.CarbonAwareOperator"],
              }
         ],
     }
@@ -122,7 +122,7 @@ To build and test the provider locally, typically using a `.whl` file with the A
         RUN pip install --user airflow_provider_carbonaware.whl
         ```
 6.  **Add Example DAGs**:
-    Copy the example DAGs from `carbonaware_provider/example_dags/` to the `dags/` folder of your Astro project.
+    Copy the example DAGs from `airflow_provider_carbonaware/example_dags/` to the `dags/` folder of your Astro project.
 7.  **Start Airflow**:
     Run `astro dev start` to build the Docker images and start Airflow locally.
 8.  **Test**:

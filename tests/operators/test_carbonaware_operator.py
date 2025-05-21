@@ -19,7 +19,7 @@ from unittest.mock import MagicMock, patch
 from airflow.utils.context import Context
 from airflow.providers.standard.triggers.temporal import DateTimeTrigger
 
-from carbonaware_provider.operators.carbonaware import CarbonAwareOperator
+from airflow_provider_carbonaware.operators.carbonaware import CarbonAwareOperator
 from carbonaware_scheduler.types.schedule_create_response import (
     ScheduleCreateResponse,
     ScheduleOption,
@@ -74,7 +74,7 @@ def test_find_optimal_time_with_zone(zone: Optional[dict]):
 
     # Use patch as a context manager
     with patch(
-        "carbonaware_provider.operators.carbonaware.CarbonawareScheduler",
+        "airflow_provider_carbonaware.operators.carbonaware.CarbonawareScheduler",
         return_value=mock_client,
     ):
         operator = CarbonAwareOperator(
@@ -116,11 +116,11 @@ def test_find_optimal_time_with_auto_detection():
 
     with (
         patch(
-            "carbonaware_provider.operators.carbonaware.CarbonawareScheduler",
+            "airflow_provider_carbonaware.operators.carbonaware.CarbonawareScheduler",
             return_value=mock_client,
         ),
         patch(
-            "carbonaware_provider.operators.carbonaware.detect_cloud_zone",
+            "airflow_provider_carbonaware.operators.carbonaware.detect_cloud_zone",
             return_value=detected_zone,
         ),
     ):
@@ -157,7 +157,7 @@ def test_execute_immediate():
 
     # Use patch as a context manager
     with patch(
-        "carbonaware_provider.operators.carbonaware.CarbonawareScheduler",
+        "airflow_provider_carbonaware.operators.carbonaware.CarbonawareScheduler",
         return_value=mock_client,
     ):
         operator = CarbonAwareOperator(
@@ -209,7 +209,7 @@ def test_execute_defer():
 
     with (
         patch(
-            "carbonaware_provider.operators.carbonaware.CarbonawareScheduler",
+            "airflow_provider_carbonaware.operators.carbonaware.CarbonawareScheduler",
             return_value=mock_client,
         ),
     ):

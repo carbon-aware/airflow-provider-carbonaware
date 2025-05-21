@@ -35,13 +35,13 @@ file = "README.md"
 content-type = "text/markdown"
 
 [project.entry-points.apache_airflow_provider]
-provider_info = "carbonaware_provider.__init__:get_provider_info"
+provider_info = "airflow_provider_carbonaware.__init__:get_provider_info"
 
 [tool.setuptools]
 include-package-data = false
 
 [tool.setuptools.dynamic]
-version = { attr = "carbonaware_provider.__version__" }
+version = { attr = "airflow_provider_carbonaware.__version__" }
 
 [tool.setuptools.packages.find]
 exclude = [

@@ -3,4 +3,4 @@ display-name: CarbonAware
 docs-url: https://github.com/carbon-aware/airflow-provider-carbon-aware/blob/main/README.md
 
 operators:
-  - module: carbonaware_provider.operators.carbonaware.CarbonAwareOperator
+  - module: airflow_provider_carbonaware.operators.carbonaware.CarbonAwareOperator

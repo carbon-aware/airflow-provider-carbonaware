@@ -19,7 +19,7 @@ except ImportError:
     from airflow.operators.python_operator import PythonOperator  # noqa: F401
     from airflow.operators.bash_operator import BashOperator
 
-from carbonaware_provider.operators.carbonaware import CarbonAwareOperator
+from airflow_provider_carbonaware.operators.carbonaware import CarbonAwareOperator
 
 
 @dag(
