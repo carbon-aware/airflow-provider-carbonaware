@@ -20,7 +20,7 @@ classifiers = [
 dynamic = [
     "version"
 ]
-requires-python = "~=3.8"
+requires-python = ">=3.8"
 dependencies = [
     "apache-airflow>=2.4",
     "carbonaware-scheduler-client>=0.1.2"
