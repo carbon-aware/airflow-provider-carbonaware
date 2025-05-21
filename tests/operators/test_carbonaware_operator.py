@@ -15,8 +15,8 @@ import pytest
 from datetime import datetime, timedelta, timezone
 from unittest.mock import MagicMock, patch
 
-from airflow.models.taskinstance import TaskInstance
 from airflow.utils.context import Context
+from airflow.providers.standard.triggers.temporal import DateTimeTrigger
 
 from carbonaware_provider.operators.carbonaware import CarbonAwareOperator
 from carbonaware_scheduler.types.schedule_create_response import ScheduleCreateResponse, ScheduleOption
@@ -200,6 +200,6 @@ def test_execute_defer():
             operator.execute(mock_context)
 
     # Assert that the task was deferred
-    assert exc_info.value.trigger == "DateTimeTrigger"
+    assert isinstance(exc_info.value.trigger, DateTimeTrigger)
+    assert exc_info.value.trigger.moment == future_time
     assert exc_info.value.method_name == "execute_complete"
-    assert exc_info.value.kwargs["optimal_time"] == future_time.isoformat()

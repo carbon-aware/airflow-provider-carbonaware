@@ -4,10 +4,8 @@ from datetime import datetime, timedelta, timezone
 from typing import TYPE_CHECKING, Any, Dict, Optional
 
 from airflow.models import BaseOperator, BaseOperatorLink
+from airflow.providers.standard.triggers.temporal import DateTimeTrigger
 from airflow.utils.context import Context
-from airflow.utils.session import provide_session
-from airflow.models.taskinstance import TaskInstance
-from sqlalchemy.orm import Session
 
 from carbonaware_scheduler import CarbonawareScheduler
 from carbonaware_scheduler.lib.introspection import detect_cloud_zone
@@ -100,25 +98,26 @@ class CarbonAwareOperator(BaseOperator):
         # Otherwise, defer to the optimal time
         self.log.info(f"Deferring execution to optimal time: {optimal_time}")
         self.defer(
-            trigger="DateTimeTrigger",
+            trigger=DateTimeTrigger(moment=optimal_time, end_from_trigger=True),
             method_name="execute_complete",
-            kwargs={"optimal_time": optimal_time.isoformat()},
-            timeout=None,
         )
     
     def execute_complete(self, context: Context, event: Optional[Dict[str, Any]] = None) -> Any:
         """
         Callback for deferred execution. This is called when the trigger fires.
         """
-        optimal_time = event.get("optimal_time") if event else None
-        self.log.info(f"Reached optimal carbon intensity time: {optimal_time}")
+        moment = event.get("moment") if event else None
+        self.log.info(f"Reached optimal carbon intensity time: {moment}")
         return None
     
     def _find_optimal_time(self) -> datetime:
         """
         Find the optimal time to execute the task based on carbon intensity.
         """
+        self.log.info("Creating CarbonAwareScheduler client")
         client = CarbonawareScheduler()
+        self.log.info("Successfully initialized CarbonawareScheduler client object")
+        self.log.info("Created CarbonAwareScheduler client")
         
         # Calculate time window
         now = datetime.now(timezone.utc)
@@ -139,12 +138,14 @@ class CarbonAwareOperator(BaseOperator):
             zones = [self.zone]
         
         # Get optimal schedule
+        self.log.info("Before schedule.create")
         schedule_response = client.schedule.create(
             duration=duration,
             windows=[window],
             zones=zones,
             num_options=0,
         )
+        self.log.info("After schedule.create")
         
         # Return the optimal time
         return schedule_response.ideal.time
