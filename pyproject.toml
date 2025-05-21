@@ -48,3 +48,8 @@ exclude = [
     "*tests.*",
     "*tests"
 ]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+]
