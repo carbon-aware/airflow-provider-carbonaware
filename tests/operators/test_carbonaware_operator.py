@@ -13,6 +13,7 @@ import time
 from airflow.exceptions import TaskDeferred
 import pytest
 from datetime import datetime, timedelta, timezone
+from typing import Optional
 from unittest.mock import MagicMock, patch
 
 from airflow.utils.context import Context
@@ -38,7 +39,7 @@ Test CarbonAware Operator.
     ],
 )
 def test_init(
-    execution_window_minutes: int, task_duration_minutes: int, zone: dict | None
+    execution_window_minutes: int, task_duration_minutes: int, zone: Optional[dict]
 ):
     """Test operator initialization."""
     operator = CarbonAwareOperator(
@@ -60,7 +61,7 @@ def test_init(
         ({"provider": "aws", "region": "us-east-1"}),
     ],
 )
-def test_find_optimal_time_with_zone(zone: dict | None):
+def test_find_optimal_time_with_zone(zone: Optional[dict]):
     """Test finding optimal execution time with explicit zone."""
     # Mock the scheduler client and response
     mock_client = MagicMock()
