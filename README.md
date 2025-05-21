@@ -60,9 +60,6 @@ def my_carbon_aware_dag():
         execution_window_minutes=120,  # Look for optimal time in the next 120 minutes
         task_duration_minutes=30,      # The estimated duration of the carbon-sensitive workload
         zone={"provider": "aws", "region": "us-east-1"} # Specify your cloud provider and region
-        # Alternatively, you can use:
-        # location="eastus" # For Azure (example, consult client docs for exact supported values)
-        # location="gcp-europe-west1" # For GCP (example, consult client docs for exact supported values)
     )
     
     def my_data_processing_task():
