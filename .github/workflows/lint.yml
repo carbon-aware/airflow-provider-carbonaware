@@ -7,7 +7,7 @@ on:
     branches: [ main ]
 
 jobs:
-  test:
+  lint:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -18,6 +18,9 @@ jobs:
     - uses: astral-sh/setup-uv@v3
     - name: Install python
       run: uv python install ${{ matrix.python-version }}
-    - name: Run linting and formatting
+    - name: Run lint
       run: |
-        uv lint .
+        uv run -m ruff --check .
+    - name: Run format
+      run: |
+        uv run -m ruff format
