@@ -20,7 +20,7 @@ jobs:
       run: uv python install ${{ matrix.python-version }}
     - name: Run lint
       run: |
-        uv run -m ruff --check .
+        uv run -m ruff check 
     - name: Run format
       run: |
         uv run -m ruff format

@@ -26,7 +26,7 @@ class CarbonAwareOperatorExtraLink(BaseOperatorLink):
 class CarbonAwareOperator(BaseOperator):
     """
     Defers execution of downstream tasks to an optimal time based on carbon intensity.
-    
+
     The operator uses the CarbonAware Scheduler API to find the optimal time
     to run tasks within a specified time window, based on carbon intensity
     in the specified region(s).
@@ -46,11 +46,11 @@ class CarbonAwareOperator(BaseOperator):
             task_duration_minutes=30,      # Expected duration of downstream tasks
             zone=None,
         )
-        
+
         # These tasks will run at the optimal time
         task1 = PythonOperator(...)
         task2 = BashOperator(...)
-        
+
         # Define dependencies
         carbon_aware >> [task1, task2]
     ```
@@ -88,43 +88,44 @@ class CarbonAwareOperator(BaseOperator):
         # Find the optimal time and defer
         self.log.info("Finding optimal execution time based on carbon intensity")
         optimal_time = self._find_optimal_time()
-        
+
         # If optimal time is now or in the past, execute immediately
         now = datetime.now(timezone.utc)
         if optimal_time <= now:
-            self.log.info("Optimal time is now or in the past, proceeding with execution")
+            self.log.info(
+                "Optimal time is now or in the past, proceeding with execution"
+            )
             return None
-        
+
         # Otherwise, defer to the optimal time
         self.log.info(f"Deferring execution to optimal time: {optimal_time}")
         self.defer(
             trigger=DateTimeTrigger(moment=optimal_time, end_from_trigger=True),
             method_name="execute_complete",
         )
-    
-    def execute_complete(self, context: Context, event: Optional[Dict[str, Any]] = None) -> Any:
+
+    def execute_complete(
+        self, context: Context, event: Optional[Dict[str, Any]] = None
+    ) -> Any:
         """
         Callback for deferred execution. This is called when the trigger fires.
         """
         moment = event.get("moment") if event else None
         self.log.info(f"Reached optimal carbon intensity time: {moment}")
         return None
-    
+
     def _find_optimal_time(self) -> datetime:
         """
         Find the optimal time to execute the task based on carbon intensity.
         """
         client = CarbonawareScheduler()
-        
+
         # Calculate time window
         now = datetime.now(timezone.utc)
         end_time = now + timedelta(minutes=self.execution_window_minutes)
-        
-        window = {
-            "start": now,
-            "end": end_time
-        }
-        
+
+        window = {"start": now, "end": end_time}
+
         # Convert task duration to ISO 8601 duration format
         duration = f"PT{self.task_duration_minutes}M"
 
@@ -133,7 +134,7 @@ class CarbonAwareOperator(BaseOperator):
             zones = detect_cloud_zone()
         else:
             zones = [self.zone]
-        
+
         # Get optimal schedule
         try:
             schedule_response = client.schedule.create(
@@ -145,6 +146,6 @@ class CarbonAwareOperator(BaseOperator):
         except Exception as e:
             self.log.error(f"Failed to find optimal time -- defaulting to now: {e}")
             return now
-        
+
         # Return the optimal time
         return schedule_response.ideal.time
