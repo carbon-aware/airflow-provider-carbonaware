@@ -85,7 +85,7 @@ class CarbonAwareOperator(BaseOperator):
         """
         Determines the optimal time to execute based on carbon intensity and defers execution to that time.
         """
-        # Otherwise, find the optimal time and defer
+        # Find the optimal time and defer
         self.log.info("Finding optimal execution time based on carbon intensity")
         optimal_time = self._find_optimal_time()
         
@@ -114,10 +114,7 @@ class CarbonAwareOperator(BaseOperator):
         """
         Find the optimal time to execute the task based on carbon intensity.
         """
-        self.log.info("Creating CarbonAwareScheduler client")
         client = CarbonawareScheduler()
-        self.log.info("Successfully initialized CarbonawareScheduler client object")
-        self.log.info("Created CarbonAwareScheduler client")
         
         # Calculate time window
         now = datetime.now(timezone.utc)
@@ -138,14 +135,16 @@ class CarbonAwareOperator(BaseOperator):
             zones = [self.zone]
         
         # Get optimal schedule
-        self.log.info("Before schedule.create")
-        schedule_response = client.schedule.create(
-            duration=duration,
-            windows=[window],
-            zones=zones,
-            num_options=0,
-        )
-        self.log.info("After schedule.create")
+        try:
+            schedule_response = client.schedule.create(
+                duration=duration,
+                windows=[window],
+                zones=zones,
+                num_options=0,
+            )
+        except Exception as e:
+            self.log.error(f"Failed to find optimal time -- defaulting to now: {e}")
+            return now
         
         # Return the optimal time
         return schedule_response.ideal.time
